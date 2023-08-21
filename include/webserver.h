@@ -10,7 +10,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#include  "configparser.h"
+#include "configparser.h"
 #include "epoller.h"      
 #include "log.h"
 #include "heaptimer.h"  
@@ -22,11 +22,6 @@
 class WebServer {
 public:
     WebServer();
-    WebServer(
-        int port, int trigMode, int timeoutMS, bool OptLinger,
-        int sqlPort, const char* sqlUser, const  char* sqlPwd,
-        const char* dbName, int connPoolNum, int threadNum,
-        bool openLog, int logLevel, int logQueSize);
     ~WebServer();
 
     // 启动服务器
@@ -35,13 +30,13 @@ public:
 private:
 
     // 初始化服务器监听套接字
-    bool initSocket();
+    bool InitSocket();
 
     // 根据触发模式初始化事件模式
-    void InitEventMode_(int trigMode);
+    void InitEventMode(int trigMode);
 
     // 向 Epoller 添加客户端连接
-    void AddClient_(int fd, sockaddr_in addr);
+    void AddClient(int fd, sockaddr_in addr);
 
     // 处理监听套接字事件
     void DealListen();
@@ -74,14 +69,15 @@ private:
     static int SetFdNonblock(int fd);
 
     // 最大文件描述符数量
-    static const int MAX_FD = 65536;
+    int _max_fd;
 
-    bool _load_conf_file_ok;
+    bool _load_conf_file_ok;  // 配置文件是否加载成功
+
     int _port;
-    bool _openLinger;
-    int _timeoutMS;  // 超时时间（毫秒）
-    bool _is_close;
-    int _listen_fd;
+    bool _open_linger;        // 优雅关闭
+    int _timeout_MS;          // 超时时间（毫秒）
+    bool _is_close;           // 服务器是否关闭
+    int _listen_fd;           
     char* _src_root_dir;
 
     uint32_t _listen_event;

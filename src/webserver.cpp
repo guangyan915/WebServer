@@ -8,12 +8,13 @@ WebServer::WebServer() {
   _load_conf_file_ok =  config->Parse();
 
   _port = config->GetInt("server", "server_port", 8080);
-  _openLinger = config->GetString("server", "open_linger", "off") == "on" ? true : false;
+  _open_linger = config->GetString("server", "open_linger", "off") == "on" ? true : false;
   std::string root_dir = config->GetString("server", "root_dir", "./");
   _src_root_dir = new char[root_dir.size() + 1]();
   strncpy(_src_root_dir, root_dir.c_str(), root_dir.size());
-  _timeoutMS = config->GetInt("server", "timeoutMs", 60000);
-  
+  _timeout_MS = config->GetInt("server", "timeout_Ms", 60000);
+  _max_fd = config->GetInt("server", "_max_fd", 1024);
+
   int thread_pool_size = config->GetInt("server", "thread_pool_size", std::thread::hardware_concurrency()); // 没有配置的话默认系统核心数
   
   _timer = new HeapTimer();
@@ -34,9 +35,9 @@ WebServer::WebServer() {
   
   int tirg_mode = config->GetInt("server", "trig_mode", 3);
   _is_close = false;
-  InitEventMode_(tirg_mode);  // 初始化事件模式
+  InitEventMode(tirg_mode);  // 初始化事件模式
    
-  if (!initSocket()) { _is_close = true; }  // 初始化套接字失败则关闭服务器
+  if (!InitSocket()) { _is_close = true; }  // 初始化套接字失败则关闭服务器
   
   bool open_log = config->GetString("log", "log", "on") == "on" ? true : false;
   if (open_log) {
@@ -52,7 +53,7 @@ WebServer::WebServer() {
     else {
       LOG_INFO("========== 服务器初始化 ==========");
       if(!_load_conf_file_ok) LOG_WARN("配置文件加载失败!使用默认配置");
-      LOG_INFO("端口：%d，开启Linger：%s", _port, _openLinger ? "true" : "false");
+      LOG_INFO("端口：%d，开启Linger：%s", _port, _open_linger ? "true" : "false");
       
       LOG_INFO("监听模式：%s，连接模式：%s",
           (_listen_event & EPOLLET ? "ET" : "LT"),
@@ -62,43 +63,6 @@ WebServer::WebServer() {
       LOG_INFO("Sql连接池数量：%d，线程池数量：%d", mysql_connection_pool_size, thread_pool_size);
     }
   }
-}
-
-WebServer::WebServer(
-    int port, int trigMode, int timeoutMS, bool OptLinger,
-    int sqlPort, const char* sqlUser, const char* sqlPwd,
-    const char* dbName, int connPoolNum, int threadNum,
-    bool openLog, int logLevel, int logQueSize) :
-    _port(port), _openLinger(OptLinger), _timeoutMS(timeoutMS), _is_close(false),
-    _timer(new HeapTimer()), _thread_pool(new ThreadPool(threadNum)), _epoller(new Epoller())
-{
-    // 获取当前工作目录，用于资源路径
-    _src_root_dir = getcwd(nullptr, 256);
-    assert(_src_root_dir);
-    strncat(_src_root_dir, "/webroot/", 16);
-    HttpConn::_user_count = 0;
-    HttpConn::_src_dir = _src_root_dir;
-    SqlConnPool::Instance()->Init("localhost", sqlPort, sqlUser, sqlPwd, dbName, connPoolNum);
-
-    InitEventMode_(trigMode);  // 初始化事件模式
-    if (!initSocket()) { _is_close = true; }  // 初始化套接字失败则关闭服务器
-
-    if (openLog) {
-        Log::Instance()->init(logLevel, "./log", ".log", logQueSize);
-        if (_is_close) {
-            LOG_ERROR("========== 服务器初始化错误！==========");
-        }
-        else {
-            LOG_INFO("========== 服务器初始化 ==========");
-            LOG_INFO("端口：%d，开启Linger：%s", _port, OptLinger ? "true" : "false");
-            LOG_INFO("监听模式：%s，连接模式：%s",
-                (_listen_event & EPOLLET ? "ET" : "LT"),
-                (_conn_event & EPOLLET ? "ET" : "LT"));
-            LOG_INFO("日志等级：%d", logLevel);
-            LOG_INFO("资源路径：%s", HttpConn::_src_dir);
-            LOG_INFO("Sql连接池数量：%d，线程池数量：%d", connPoolNum, threadNum);
-        }
-    }
 }
 
 
@@ -113,7 +77,7 @@ WebServer::~WebServer() {
 }
 
 // 初始化事件模式
-void WebServer::InitEventMode_(int trigMode) {
+void WebServer::InitEventMode(int trigMode) {
     _listen_event = EPOLLRDHUP;
     _conn_event = EPOLLONESHOT | EPOLLRDHUP;
     switch (trigMode) {
@@ -142,7 +106,7 @@ void WebServer::Start() {
     int timeMS = -1;  // epoll等待超时时间，-1表示无事件将一直阻塞
     if (!_is_close) { LOG_INFO("========== 服务器启动 =========="); }
     while (!_is_close) {
-        if (_timeoutMS > 0) {
+        if (_timeout_MS > 0) {
             timeMS = _timer->GetNextTick();
         }
 
@@ -192,11 +156,11 @@ void WebServer::CloseConn(HttpConn* client) {
 }
 
 // 添加客户端连接
-void WebServer::AddClient_(int fd, sockaddr_in addr) {
+void WebServer::AddClient(int fd, sockaddr_in addr) {
     assert(fd > 0);
     _users[fd].init(fd, addr);
-    if (_timeoutMS > 0) {
-        _timer->add(fd, _timeoutMS, std::bind(&WebServer::CloseConn, this, &_users[fd]));
+    if (_timeout_MS > 0) {
+        _timer->add(fd, _timeout_MS, std::bind(&WebServer::CloseConn, this, &_users[fd]));
     }
     _epoller->AddFd(fd, EPOLLIN | _conn_event);  // 将客户端加入epoll监听
     SetFdNonblock(fd);  // 设置文件描述符为非阻塞模式
@@ -210,12 +174,12 @@ void WebServer::DealListen() {
     do {
         int fd = accept(_listen_fd, (struct sockaddr*)&addr, &len);  // 接受连接请求
         if (fd <= 0) { return; }
-        else if (HttpConn::_user_count >= MAX_FD) {
+        else if (HttpConn::_user_count >= _max_fd) {
             SendError(fd, "服务器繁忙！");
             LOG_WARN("客户端已满！");
             return;
         }
-        AddClient_(fd, addr);  // 添加新客户端连接
+        AddClient(fd, addr);  // 添加新客户端连接
     } while (_listen_event & EPOLLET);  // 是否启用边缘触发模式
 }
 
@@ -236,7 +200,7 @@ void WebServer::DealWrite(HttpConn* client) {
 // 延长连接的超时时间
 void WebServer::ExtenTime(HttpConn* client) {
     assert(client);
-    if (_timeoutMS > 0) { _timer->adjust(client->GetFd(), _timeoutMS); }
+    if (_timeout_MS > 0) { _timer->adjust(client->GetFd(), _timeout_MS); }
 }
 
 // 处理读事件
@@ -286,7 +250,7 @@ void WebServer::OnWrite(HttpConn* client) {
 }
 
 // 初始化套接字
-bool WebServer::initSocket() {
+bool WebServer::InitSocket() {
     int ret;
     struct sockaddr_in addr;
     if (_port > 65535 || _port < 1024) {
@@ -297,7 +261,7 @@ bool WebServer::initSocket() {
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
     addr.sin_port = htons(_port);
     struct linger optLinger = { 0 };
-    if (_openLinger) {
+    if (_open_linger) {
         // 优雅关闭: 等待剩余数据发送完毕或超时
         optLinger.l_onoff = 1;      // 非零表示启用 linger 选项
         optLinger.l_linger = 1;     // 延迟关闭的时间，以秒为单位
