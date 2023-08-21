@@ -153,6 +153,30 @@ src/buff.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/webServer.dir/build.make CMakeFiles/webServer.dir/src/buff.cpp.s
 .PHONY : src/buff.cpp.s
 
+src/configparser.o: src/configparser.cpp.o
+.PHONY : src/configparser.o
+
+# target to build an object file
+src/configparser.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webServer.dir/build.make CMakeFiles/webServer.dir/src/configparser.cpp.o
+.PHONY : src/configparser.cpp.o
+
+src/configparser.i: src/configparser.cpp.i
+.PHONY : src/configparser.i
+
+# target to preprocess a source file
+src/configparser.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webServer.dir/build.make CMakeFiles/webServer.dir/src/configparser.cpp.i
+.PHONY : src/configparser.cpp.i
+
+src/configparser.s: src/configparser.cpp.s
+.PHONY : src/configparser.s
+
+# target to generate assembly for a file
+src/configparser.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webServer.dir/build.make CMakeFiles/webServer.dir/src/configparser.cpp.s
+.PHONY : src/configparser.cpp.s
+
 src/epoller.o: src/epoller.cpp.o
 .PHONY : src/epoller.o
 
@@ -381,6 +405,9 @@ help:
 	@echo "... src/buff.o"
 	@echo "... src/buff.i"
 	@echo "... src/buff.s"
+	@echo "... src/configparser.o"
+	@echo "... src/configparser.i"
+	@echo "... src/configparser.s"
 	@echo "... src/epoller.o"
 	@echo "... src/epoller.i"
 	@echo "... src/epoller.s"

@@ -10,6 +10,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#include  "configparser.h"
 #include "epoller.h"      
 #include "log.h"
 #include "heaptimer.h"  
@@ -20,20 +21,19 @@
 
 class WebServer {
 public:
-    // 构造函数，初始化服务器配置
+    WebServer();
     WebServer(
         int port, int trigMode, int timeoutMS, bool OptLinger,
         int sqlPort, const char* sqlUser, const  char* sqlPwd,
         const char* dbName, int connPoolNum, int threadNum,
         bool openLog, int logLevel, int logQueSize);
-
-    // 析构函数，释放资源
     ~WebServer();
 
     // 启动服务器
     void Start();
 
 private:
+
     // 初始化服务器监听套接字
     bool initSocket();
 
@@ -76,6 +76,7 @@ private:
     // 最大文件描述符数量
     static const int MAX_FD = 65536;
 
+    bool _load_conf_file_ok;
     int _port;
     bool _openLinger;
     int _timeoutMS;  // 超时时间（毫秒）
@@ -86,9 +87,9 @@ private:
     uint32_t _listen_event;
     uint32_t _conn_event;
 
-    std::unique_ptr<HeapTimer> _timer;
-    std::unique_ptr<ThreadPool> _thread_pool;
-    std::unique_ptr<Epoller> _epoller;
+    HeapTimer* _timer;
+    ThreadPool* _thread_pool;
+    Epoller* _epoller;
     std::unordered_map<int, HttpConn> _users;
 };
 

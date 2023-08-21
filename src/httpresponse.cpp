@@ -61,9 +61,14 @@ void HttpResponse::Init(const string& _src_dir, string& path, bool isKeepAlive, 
 }
 
 void HttpResponse::MakeResponse(Buffer& buff) {
-    // 判断请求的资源文件是否存在或者是目录
-    if (stat((_src_root_dir + _path).data(), &_mm_file_stat) < 0 || S_ISDIR(_mm_file_stat.st_mode)) {
+    if (stat((_src_root_dir + _path).data(), &_mm_file_stat) < 0) {
         _code = 404;  // 请求的资源不存在，设置状态码为 404
+    }
+    else if (S_ISDIR(_mm_file_stat.st_mode)) {
+        // 目录 默认访问该目录下的index.html
+        if (_path.back() == '/') _path += "index.html";
+        else _path += "index.html";
+        if(_code == -1) _code = 200;
     }
     else if (!(_mm_file_stat.st_mode & S_IROTH)) {
         _code = 403;  // 请求的资源没有读权限，设置状态码为 403
@@ -78,7 +83,6 @@ void HttpResponse::MakeResponse(Buffer& buff) {
     AddHeader(buff);      // 添加响应头部信息
     AddContent(buff);    // 添加响应内容，可能是文件内容或错误页面内容
 }
-
 
 char* HttpResponse::File() {
     return _mm_file;

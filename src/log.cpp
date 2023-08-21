@@ -40,7 +40,8 @@ void Log::SetLevel(int level) {
 }
 
 void Log::init(int level, const char* path, const char* suffix,
-    int maxQueueSize) {
+    int maxQueueSize, int log_max_size) {
+    _log_max_lines = log_max_size;
     // 初始化日志
     _is_open = true; // 标记日志系统为开启状态
     _level = level; // 设置日志级别
@@ -95,7 +96,6 @@ void Log::init(int level, const char* path, const char* suffix,
     }
 }
 
-
 void Log::write(int level, const char* format, ...) {
     struct timeval now = { 0, 0 };
     // 获取当前时间戳和微秒
@@ -107,11 +107,11 @@ void Log::write(int level, const char* format, ...) {
     va_list vaList;
 
     // 是否需要切换日志文件
-    if (_to_day != t.tm_mday || (_line_count && (_line_count % MAX_LINES == 0)))
+    if (_to_day != t.tm_mday || (_line_count && (_line_count % _log_max_lines == 0)))
     {
         unique_lock<mutex> locker(_mtx);
         locker.unlock();
-
+        // 创建文件时释放锁
         char newFile[LOG_NAME_LEN];
         char tail[36] = { 0 };
         // 将年、月、日信息格式化成字符串写入到tail里"YYYY_MM_DD
@@ -126,7 +126,7 @@ void Log::write(int level, const char* format, ...) {
             _line_count = 0;
         }
         else {
-            snprintf(newFile, LOG_NAME_LEN - 72, "%s/%s-%d%s", _path, tail, (_line_count / MAX_LINES), _suffix);
+            snprintf(newFile, LOG_NAME_LEN - 72, "%s/%s-%d%s", _path, tail, (_line_count / _log_max_lines), _suffix);
         }
 
         locker.lock();
@@ -148,7 +148,7 @@ void Log::write(int level, const char* format, ...) {
 
         _buff.HasWritten(n);
         // 根据日志等级，在缓冲区中添加相应的日志等级标题
-        AppendLogLevelTitle_(level);
+        AppendLogLevelTitle(level);
 
         va_start(vaList, format);
         // 使用格式化字符串和可变参数将日志内容添加到缓冲区
@@ -170,7 +170,7 @@ void Log::write(int level, const char* format, ...) {
     }
 }
 
-void Log::AppendLogLevelTitle_(int level) {
+void Log::AppendLogLevelTitle(int level) {
     // 添加日志级别标签
     switch (level) {
     case 0:

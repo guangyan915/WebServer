@@ -19,12 +19,12 @@ void SqlConnPool::Init(const char* host, int port,
     assert(connSize > 0);  // 连接数量必须大于0
     for (int i = 0; i < connSize; i++) {
         MYSQL* sql = nullptr;
-        sql = my_sqlinit(sql);  // 初始化MySQL连接对象
+        sql = mysql_init(sql);  // 初始化MySQL连接对象
         if (!sql) {
             LOG_ERROR("MySql 初始化失败！");
             assert(sql);
         }
-        sql = my_sqlreal_connect(sql, host,
+        sql = mysql_real_connect(sql, host,
             user, pwd,
             dbName, port, nullptr, 0);  // 创建实际连接
         if (!sql) {
@@ -66,9 +66,9 @@ void SqlConnPool::ClosePool() {
     while (!_conn_que.empty()) {
         auto item = _conn_que.front();
         _conn_que.pop();  // 弹出连接队列中的连接
-        my_sqlclose(item);  // 关闭连接
+        mysql_close(item);  // 关闭连接
     }
-    my_sqllibrary_end();  // 关闭MySQL库
+    mysql_library_end();  // 关闭MySQL库
 }
 
 // 获取空闲数据库连接数量

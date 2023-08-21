@@ -16,7 +16,8 @@ class Log {
 public:
     void init(int level, const char* path = "./log",
         const char* suffix = ".log",
-        int maxQueueCapacity = 1024); // 初始化日志
+        int maxQueueCapacity = 1024,
+        int log_max_size = 78402); // 初始化日志
 
     static Log* Instance();                         // 获取单例实例
     static void FlushLogThread();                   // 异步写日志线程
@@ -37,12 +38,12 @@ private:
 private:
     static const int LOG_PATH_LEN = 256;
     static const int LOG_NAME_LEN = 256;
-    static const int MAX_LINES = 50000;
+    //static const int MAX_LINES = 5000;
 
     const char* _path;                              // 日志存储路径
     const char* _suffix;                            // 日志文件后缀
 
-    int _MAX_LINES;
+    int _log_max_lines;
 
     int _line_count;                                // 当前日志文件日志行数
     int _to_day;                                    // 现在是哪一天                                    
@@ -58,46 +59,6 @@ private:
     std::unique_ptr<std::thread> _write_thread;      // 异步写日志的线程
     std::mutex _mtx;                                // 互斥锁
 };
-
-/*
-
-template<typename... Args>
-void LOG_DEBUG(const char* format, Args... args) {
-    Log* log = Log::Instance();
-    if (log->IsOpen() && log->GetLevel() <= 0) {
-        log->write(0, format, args...);
-        log->flush();
-    }
-}
-
-template<typename... Args>
-void LOG_INFO(const char* format, Args... args) {
-    Log* log = Log::Instance();
-    if (log->IsOpen() && log->GetLevel() <= 1) {
-        log->write(1, format, args...);
-        log->flush();
-    }
-}
-
-template<typename... Args>
-void LOG_WARN(const char* format, Args... args) {
-    Log* log = Log::Instance();
-    if (log->IsOpen() && log->GetLevel() <= 2) {
-        log->write(2, format, args...);
-        log->flush();
-    }
-}
-
-template<typename... Args>
-void LOG_ERROR(const char* format, Args... args) {
-    Log* log = Log::Instance();
-    if (log->IsOpen() && log->GetLevel() <= 3) {
-        log->write(3, format, args...);
-        log->flush();
-    }
-}
-*/
-
 
 #define LOG_BASE(level, format, ...) \
     do {\

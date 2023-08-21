@@ -1,7 +1,7 @@
 #include "../include/httprequest.h"
 using namespace std;
 
-const unordered_set<string> HttpRequest::DEFAULT_HTML{
+const unordered_set<string> HttpRequest::_default_html{
             "/index", "/register", "/login",
              "/welcome", "/video", "/picture", };
 
@@ -60,15 +60,14 @@ bool HttpRequest::parse(Buffer& buff) {
     return true;  // 解析成功，返回 true
 }
 
-
 void HttpRequest::ParsePath() {
-    // 如果请求路径为根路径，则将路径设置为默认的首页路径（index.html）
+    // 如果请求路径为根路径，则将路径设置为默认的首页路径
     if (_path == "/") {
         _path = "/index.html";
     }
     else {
         // 遍历默认的静态资源路径数组
-        for (auto& item : DEFAULT_HTML) {
+        for (auto& item : _default_html) {
             // 如果请求路径在默认静态资源路径中找到匹配项，则将路径末尾添加 .html 扩展名
             if (item == _path) {
                 _path += ".html";
@@ -77,7 +76,6 @@ void HttpRequest::ParsePath() {
         }
     }
 }
-
 
 bool HttpRequest::ParseRequestLine(const string& line) {
     // 定义正则表达式模式，匹配请求行的格式
@@ -240,7 +238,7 @@ bool HttpRequest::UserVerify(const string& name, const string& pwd, bool isLogin
     }
 
     ///查询用户及密码 
-    snprintf(order, 256, "SELECT username, password FROM user WHERE username='%s' LIMIT 1", name.c_str());MYSQL_FIELD
+    snprintf(order, 256, "SELECT username, password FROM user WHERE username='%s' LIMIT 1", name.c_str());
     LOG_DEBUG("%s", order);
 
     if (mysql_query(sql, order)) {

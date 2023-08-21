@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/root/githubPorject/WebServer/src/buff.cpp" "CMakeFiles/webServer.dir/src/buff.cpp.o" "gcc" "CMakeFiles/webServer.dir/src/buff.cpp.o.d"
+  "/root/githubPorject/WebServer/src/configparser.cpp" "CMakeFiles/webServer.dir/src/configparser.cpp.o" "gcc" "CMakeFiles/webServer.dir/src/configparser.cpp.o.d"
   "/root/githubPorject/WebServer/src/epoller.cpp" "CMakeFiles/webServer.dir/src/epoller.cpp.o" "gcc" "CMakeFiles/webServer.dir/src/epoller.cpp.o.d"
   "/root/githubPorject/WebServer/src/heaptimer.cpp" "CMakeFiles/webServer.dir/src/heaptimer.cpp.o" "gcc" "CMakeFiles/webServer.dir/src/heaptimer.cpp.o.d"
   "/root/githubPorject/WebServer/src/httpconnection.cpp" "CMakeFiles/webServer.dir/src/httpconnection.cpp.o" "gcc" "CMakeFiles/webServer.dir/src/httpconnection.cpp.o.d"

@@ -118,6 +118,33 @@ CMakeFiles/webServer.dir/src/webserver.cpp.o: \
  /usr/include/asm/sockios.h /usr/include/asm-generic/sockios.h \
  /usr/include/netinet/in.h /usr/include/bits/in.h \
  /usr/include/arpa/inet.h \
+ /root/githubPorject/WebServer/src/../include/configparser.h \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/map \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/stl_tree.h \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/stl_map.h \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/stl_multimap.h \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/iostream \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/ostream \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/ios \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/ios_base.h \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/locale_classes.h \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/locale_classes.tcc \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/system_error \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/x86_64-redhat-linux/bits/error_constants.h \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/streambuf \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/streambuf.tcc \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/basic_ios.h \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/locale_facets.h \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/cwctype \
+ /usr/include/wctype.h \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/x86_64-redhat-linux/bits/ctype_base.h \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/streambuf_iterator.h \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/x86_64-redhat-linux/bits/ctype_inline.h \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/locale_facets.tcc \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/basic_ios.tcc \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/ostream.tcc \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/istream \
+ /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/istream.tcc \
  /root/githubPorject/WebServer/src/../include/epoller.h \
  /usr/include/sys/epoll.h /usr/include/bits/epoll.h \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/vector \
@@ -132,8 +159,6 @@ CMakeFiles/webServer.dir/src/webserver.cpp.o: \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/ratio \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/ctime \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/parse_numbers.h \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/system_error \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/x86_64-redhat-linux/bits/error_constants.h \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/std_mutex.h \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/unique_lock.h \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/thread \
@@ -158,26 +183,6 @@ CMakeFiles/webServer.dir/src/webserver.cpp.o: \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/condition_variable \
  /root/githubPorject/WebServer/src/../include/buff.h \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/cstring \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/iostream \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/ostream \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/ios \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/ios_base.h \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/locale_classes.h \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/locale_classes.tcc \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/streambuf \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/streambuf.tcc \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/basic_ios.h \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/locale_facets.h \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/cwctype \
- /usr/include/wctype.h \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/x86_64-redhat-linux/bits/ctype_base.h \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/streambuf_iterator.h \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/x86_64-redhat-linux/bits/ctype_inline.h \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/locale_facets.tcc \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/basic_ios.tcc \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/ostream.tcc \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/istream \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/istream.tcc \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/atomic \
  /root/githubPorject/WebServer/src/../include/heaptimer.h \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/queue \
@@ -222,10 +227,6 @@ CMakeFiles/webServer.dir/src/webserver.cpp.o: \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/sstream.tcc \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/stack \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/stl_stack.h \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/map \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/stl_tree.h \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/stl_map.h \
- /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/stl_multimap.h \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/regex_constants.h \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/regex_error.h \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/regex_automaton.h \
