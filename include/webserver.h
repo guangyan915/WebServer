@@ -41,7 +41,7 @@ private:
     void InitEventMode_(int trigMode);
 
     // 向 Epoller 添加客户端连接
-    void AddClient_(int fd, sock_addrin addr);
+    void AddClient_(int fd, sockaddr_in addr);
 
     // 处理监听套接字事件
     void DealListen();

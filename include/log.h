@@ -30,7 +30,7 @@ public:
 
 private:
     Log();
-    void AppendLogLevelTitle_(int level);           // 添加日志级别标签
+    void AppendLogLevelTitle(int level);           // 添加日志级别标签
     virtual ~Log();
     void AsyncWrite();                             // 异步写日志
 
@@ -58,6 +58,46 @@ private:
     std::unique_ptr<std::thread> _write_thread;      // 异步写日志的线程
     std::mutex _mtx;                                // 互斥锁
 };
+
+/*
+
+template<typename... Args>
+void LOG_DEBUG(const char* format, Args... args) {
+    Log* log = Log::Instance();
+    if (log->IsOpen() && log->GetLevel() <= 0) {
+        log->write(0, format, args...);
+        log->flush();
+    }
+}
+
+template<typename... Args>
+void LOG_INFO(const char* format, Args... args) {
+    Log* log = Log::Instance();
+    if (log->IsOpen() && log->GetLevel() <= 1) {
+        log->write(1, format, args...);
+        log->flush();
+    }
+}
+
+template<typename... Args>
+void LOG_WARN(const char* format, Args... args) {
+    Log* log = Log::Instance();
+    if (log->IsOpen() && log->GetLevel() <= 2) {
+        log->write(2, format, args...);
+        log->flush();
+    }
+}
+
+template<typename... Args>
+void LOG_ERROR(const char* format, Args... args) {
+    Log* log = Log::Instance();
+    if (log->IsOpen() && log->GetLevel() <= 3) {
+        log->write(3, format, args...);
+        log->flush();
+    }
+}
+*/
+
 
 #define LOG_BASE(level, format, ...) \
     do {\

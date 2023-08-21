@@ -63,6 +63,7 @@ private:
     char* _mm_file;           // 内存映射文件指针
     struct stat _mm_file_stat; // 文件状态信息
 
+
     // 文件后缀与类型映射
     static const std::unordered_map<std::string, std::string> _suffix_type;
 

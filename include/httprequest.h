@@ -5,12 +5,15 @@
 
 #pragma once
 
-#include <unordered_map>
 #include <unordered_set>
+#include <unordered_map>
 #include <string>
 #include <regex>
 #include <errno.h>     
 #include <mysql/mysql.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 
 #include "buff.h"
 #include "log.h"
@@ -95,8 +98,8 @@ private:
     std::unordered_map<std::string, std::string> _header;   // 请求头部
     std::unordered_map<std::string, std::string> _post;     // POST请求参数
 
-    // 默认的HTML资源路径集合和标签映射
-    static const std::unordered_set<std::string> DEFAULT_HTML;
+    // 默认的标签映射
+    static const std::unordered_set<std::string> _default_html;
     static const std::unordered_map<std::string, int> DEFAULT_HTML_TAG;
 
     //十六进制字符转换为对应的整数值
