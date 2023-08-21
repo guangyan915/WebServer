@@ -12,3 +12,8 @@ file(GLOB SOURCES src/*.cpp)
 
 # 添加可执行文件
 add_executable(webServer ${SOURCES})
+
+
+# 链接库
+# 链接 MySQL 客户端库的绝对路径和 pthread 库
+target_link_libraries(webServer /usr/lib64/mysql/libmysqlclient.a pthread dl)
