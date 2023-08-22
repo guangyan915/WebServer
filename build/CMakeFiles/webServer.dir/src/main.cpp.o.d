@@ -6,7 +6,12 @@ CMakeFiles/webServer.dir/src/main.cpp.o: \
  /usr/include/bits/environments.h /usr/include/bits/types.h \
  /usr/include/bits/typesizes.h \
  /opt/rh/devtoolset-9/root/usr/lib/gcc/x86_64-redhat-linux/9/include/stddef.h \
- /usr/include/bits/confname.h /usr/include/getopt.h \
+ /usr/include/bits/confname.h /usr/include/getopt.h /usr/include/signal.h \
+ /usr/include/bits/sigset.h /usr/include/bits/signum.h \
+ /usr/include/time.h /usr/include/bits/siginfo.h \
+ /usr/include/bits/sigaction.h /usr/include/bits/sigcontext.h \
+ /usr/include/bits/sigstack.h /usr/include/sys/ucontext.h \
+ /usr/include/bits/pthreadtypes.h /usr/include/bits/sigthread.h \
  /root/githubPorject/WebServer/src/../include/webserver.h \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/unordered_map \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/type_traits \
@@ -81,9 +86,8 @@ CMakeFiles/webServer.dir/src/main.cpp.o: \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/ext/atomicity.h \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/x86_64-redhat-linux/bits/gthr.h \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/x86_64-redhat-linux/bits/gthr-default.h \
- /usr/include/pthread.h /usr/include/sched.h /usr/include/time.h \
- /usr/include/bits/sched.h /usr/include/bits/time.h \
- /usr/include/bits/timex.h /usr/include/bits/pthreadtypes.h \
+ /usr/include/pthread.h /usr/include/sched.h /usr/include/bits/sched.h \
+ /usr/include/bits/time.h /usr/include/bits/timex.h \
  /usr/include/bits/setjmp.h \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/x86_64-redhat-linux/bits/atomic_word.h \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/ext/string_conversions.h \
@@ -91,8 +95,8 @@ CMakeFiles/webServer.dir/src/main.cpp.o: \
  /usr/include/stdlib.h /usr/include/bits/waitflags.h \
  /usr/include/bits/waitstatus.h /usr/include/sys/types.h \
  /usr/include/sys/select.h /usr/include/bits/select.h \
- /usr/include/bits/sigset.h /usr/include/sys/sysmacros.h \
- /usr/include/alloca.h /usr/include/bits/stdlib-float.h \
+ /usr/include/sys/sysmacros.h /usr/include/alloca.h \
+ /usr/include/bits/stdlib-float.h \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/std_abs.h \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/cstdio /usr/include/libio.h \
  /usr/include/_G_config.h /usr/include/bits/stdio_lim.h \

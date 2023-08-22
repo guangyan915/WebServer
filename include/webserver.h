@@ -80,8 +80,8 @@ private:
     int _listen_fd;           
     char* _src_root_dir;
 
-    uint32_t _listen_event;
-    uint32_t _conn_event;
+    uint32_t _listen_event;   // 监听事件模式
+    uint32_t _conn_event;     // 新连接事件模式
 
     HeapTimer* _timer;
     ThreadPool* _thread_pool;
