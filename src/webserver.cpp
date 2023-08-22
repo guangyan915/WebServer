@@ -1,5 +1,6 @@
 #include "../include/webserver.h" 
 
+
 using namespace std;
 
 WebServer::WebServer() {
@@ -15,16 +16,21 @@ WebServer::WebServer() {
   _timeout_MS = config->GetInt("server", "timeout_Ms", 60000);
   _max_fd = config->GetInt("server", "_max_fd", 1024);
 
-  int thread_pool_size = config->GetInt("server", "thread_pool_size", std::thread::hardware_concurrency()); // 没有配置的话默认系统核心数
+  int thread_pool_size = config->GetInt("pool", "thread_pool_size", std::thread::hardware_concurrency()); // 没有配置的话默认系统核心数
   
   _timer = new HeapTimer();
   _thread_pool = new ThreadPool(thread_pool_size);
   _epoller = new Epoller();
 
+  int obj_pool_init_capacity = config->GetInt("pool", "_init_capacity", 1024);
+  int obj_pool_increment = config->GetInt("pool", "_increment", 512); 
+  bool obj_pool_is_lock = config->GetString("pool", "_is_lock", "off") == "on" ? true : false;
+  _obj_pool = new ObjectPool<HttpConn>(obj_pool_init_capacity, obj_pool_increment, obj_pool_is_lock);
+
   HttpConn::_user_count = 0;
   HttpConn::_src_dir = _src_root_dir;
 
-  int mysql_connection_pool_size = config->GetInt("mysql", "mysql_connection_pool_size", 8);
+  int mysql_connection_pool_size = config->GetInt("pool", "mysql_connection_pool_size", 8);
   std::string mysql_host = config->GetString("mysql", "mysql_host", "127.0.0.1");
   int mysql_port = config->GetInt("mysql", "mysql_port", 3306);
   std::string mysql_user = config->GetString("mysql", "mysql_user", "root");
@@ -61,6 +67,7 @@ WebServer::WebServer() {
       LOG_INFO("日志等级：%d", log_level);
       LOG_INFO("资源路径：%s", HttpConn::_src_dir);
       LOG_INFO("Sql连接池数量：%d，线程池数量：%d", mysql_connection_pool_size, thread_pool_size);
+      LOG_INFO("对象连接池初始数量：%d，起始扩容数量：%d，访问加锁：%s",  obj_pool_init_capacity,  obj_pool_increment,  obj_pool_is_lock ? "true" : "false");
     }
   }
 }
@@ -120,15 +127,15 @@ void WebServer::Start() {
             else if (events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR)) {
                 // 处理套接字关闭、挂起或错误的情况
                 assert(_users.count(fd) > 0);
-                CloseConn(&_users[fd]);  // 关闭连接
+                CloseConn(_users[fd]);  // 关闭连接
             }
             else if (events & EPOLLIN) {
                 assert(_users.count(fd) > 0);
-                DealRead(&_users[fd]);  // 处理读事件
+                DealRead(_users[fd]);  // 处理读事件
             }
             else if (events & EPOLLOUT) {
                 assert(_users.count(fd) > 0);
-                DealWrite(&_users[fd]);  // 处理写事件
+                DealWrite(_users[fd]);  // 处理写事件
             }
             else {
                 LOG_ERROR("未知的事件类型");
@@ -153,18 +160,22 @@ void WebServer::CloseConn(HttpConn* client) {
     LOG_INFO("客户端[%d]断开连接！", client->GetFd());
     _epoller->DelFd(client->GetFd());  // 从epoll中移除
     client->Close();  // 关闭连接
+    _obj_pool->Delete(client);
+    auto it = _users.find(client->GetFd());
+    if(it != _users.end()) _users.erase(it);
 }
 
 // 添加客户端连接
 void WebServer::AddClient(int fd, sockaddr_in addr) {
     assert(fd > 0);
-    _users[fd].init(fd, addr);
+    _users[fd] = _obj_pool->New();
+    _users[fd]->init(fd, addr);
     if (_timeout_MS > 0) {
-        _timer->add(fd, _timeout_MS, std::bind(&WebServer::CloseConn, this, &_users[fd]));
+        _timer->add(fd, _timeout_MS, std::bind(&WebServer::CloseConn, this, _users[fd]));
     }
     _epoller->AddFd(fd, EPOLLIN | _conn_event);  // 将客户端加入epoll监听
     SetFdNonblock(fd);  // 设置文件描述符为非阻塞模式
-    LOG_INFO("客户端[%d]连接！", _users[fd].GetFd());
+    LOG_INFO("客户端[%d]连接！", _users[fd]->GetFd());
 }
 
 // 处理监听事件

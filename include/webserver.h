@@ -18,6 +18,8 @@
 #include "threadpool.h"
 #include "sqlconnectionRAII.h"
 #include "httpconnection.h"
+#include "objectpool.h"
+
 
 class WebServer {
 public:
@@ -86,7 +88,8 @@ private:
     HeapTimer* _timer;
     ThreadPool* _thread_pool;
     Epoller* _epoller;
-    std::unordered_map<int, HttpConn> _users;
+    ObjectPool<HttpConn>* _obj_pool;
+    std::unordered_map<int, HttpConn*> _users;
 };
 
 #endif //WEBSERVER_H
