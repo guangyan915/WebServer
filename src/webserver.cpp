@@ -162,7 +162,14 @@ void WebServer::CloseConn(HttpConn* client) {
     client->Close();  // 关闭连接
     _obj_pool->Delete(client);
     auto it = _users.find(client->GetFd());
-    if(it != _users.end()) _users.erase(it);
+
+    //bug _users.erase会再次析构client,Delete已经回收过了
+    //if(it != _users.end()) _users.erase(it);
+    
+    if(it != _users.end()) {
+      _users[client->GetFd()] = nullptr;
+      _users.erase(it);
+    }
 }
 
 // 添加客户端连接

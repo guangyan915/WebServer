@@ -4,6 +4,9 @@ cmake_minimum_required(VERSION 3.1.0)
 #项目名
 project(WEB_SERVER)
 
+# 添加编译选项 -g
+add_compile_options(-g)
+
 # 添加头文件路径
 include_directories(include)
 

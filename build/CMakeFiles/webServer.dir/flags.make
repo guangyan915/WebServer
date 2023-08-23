@@ -6,5 +6,5 @@ CXX_DEFINES =
 
 CXX_INCLUDES = -I/root/githubPorject/WebServer/include
 
-CXX_FLAGS = 
+CXX_FLAGS = -g
 

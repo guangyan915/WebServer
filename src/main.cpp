@@ -1,6 +1,8 @@
 #include <unistd.h>
 #include <signal.h>
 #include "../include/webserver.h"
+#include <iostream>
+#include <fstream>
 
 void WebDaemon(void)
 {
@@ -62,6 +64,19 @@ void WebDaemon(void)
 
 
 int main(int argc, char* argv[], char* envp[]) {
+    
+    if(argc < 2) {
+        std::cout << "缺少配置文件路径！" << std::endl;
+        std::cout << "格式:./webServer /path/..." << std::endl;
+        return -1;
+    }
+    
+    std::ifstream file(argv[1]);
+    if (!file) {
+        std::cout << argv[1] << "不存在" << std::endl;
+        return -2;
+    }
+    
     // 守护进程
     WebDaemon();
 
