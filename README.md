@@ -4,7 +4,7 @@
 
 自己完成过一个微型WebServer，还有一个网盘的项目。在这过程中学习到了不少东西，接下来结合整理所学到的新知识重新构建一个性能好点的WebServer。
 
-看过小林coding里一篇文章：[]([9.3 高性能网络模式：Reactor 和 Proactor | 小林coding (xiaolincoding.com)](https://xiaolincoding.com/os/8_network_system/reactor.html#演进))
+看过小林coding里一篇文章：[Reactor]([9.3 高性能网络模式：Reactor 和 Proactor | 小林coding (xiaolincoding.com)](https://xiaolincoding.com/os/8_network_system/reactor.html#演进))
 
 - 如果没有事件发生，线程只需阻塞在这个系统调用，而无需像前面的线程池方案那样轮训调用 read 操作来判断是否有数据。
 - 如果有事件发生，内核会返回产生了事件的连接，线程就会从阻塞状态返回，然后在用户态中再处理这些连接对应的业务即可。
