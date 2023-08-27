@@ -1,8 +1,5 @@
 //#ifndef HTTP_REQUEST_H
 //#define HTTP_REQUEST_H
-
-
-
 #pragma once
 
 #include <unordered_set>
@@ -13,6 +10,9 @@
 #include <mysql/mysql.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+
+#include <json/json.h>
 
 
 #include "buff.h"
@@ -60,16 +60,29 @@ public:
     // 获取HTTP版本
     std::string version() const;
 
+    // 获取请求报头
+    const std::unordered_map<std::string, std::string>& Handler();
+    size_t ContentLenth();
+    size_t BodyLenth();
+    
+    void ParseBody();
+    
     // 获取POST请求参数
     std::string GetPost(const std::string& key) const;
     std::string GetPost(const char* key) const;
+    const std::unordered_map<std::string, std::string>& GetPost();
+    
 
     // 检查是否保持连接
     bool IsKeepAlive() const;
 
-    // TODO: 添加其他解析方法，如FormData和Json
-    // void HttpConn::ParseFormData() {}
-    // void HttpConn::ParseJson() {}
+    void ParseJson();
+
+    void ParseFromData();
+    
+
+    // 解析请求体
+    //void ParseBody(Buffer& buff);
 
 private:
     // 解析请求行
@@ -78,23 +91,23 @@ private:
     // 解析请求头部
     void ParseHeader(const std::string& line);
 
-    // 解析请求体
-    void ParseBody(const std::string& line);
-
     // 解析路径
     void ParsePath();
-
+    
+    void ParseBody(const std::string& line);
+    
     // 解析POST请求参数
     void ParsePost();
 
     // 解析Url编码的POST参数
     void ParseFromUrlencoded();
 
-    // 用户验证
-    static bool UserVerify(const std::string& name, const std::string& pwd, bool isLogin);
-
     PARSE_STATE _state;                                     // 解析状态
     std::string _method, _path, _version, _body;            // 请求方法、路径、版本和请求体
+    
+    int _handle_body_state;                                 // 处理_body的结果
+    
+
     std::unordered_map<std::string, std::string> _header;   // 请求头部
     std::unordered_map<std::string, std::string> _post;     // POST请求参数
 

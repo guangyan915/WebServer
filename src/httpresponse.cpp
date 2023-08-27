@@ -2,14 +2,18 @@
 
 using namespace std;
 
-const unordered_map<string, string> HttpResponse::_suffix_type = {
+
+const std::unordered_set<string> HttpResponse::_route{"/register", "/login"}; 
+
+const std::unordered_map<std::string, std::string> HttpResponse::_suffix_type = {
     { ".html",  "text/html" },
     { ".xml",   "text/xml" },
     { ".xhtml", "application/xhtml+xml" },
     { ".txt",   "text/plain" },
     { ".rtf",   "application/rtf" },
     { ".pdf",   "application/pdf" },
-    { ".word",  "application/nsword" },
+    { ".doc",   "application/msword" },
+    { ".docx",  "application/vnd.openxmlformats-officedocument.wordprocessingml.document" },
     { ".png",   "image/png" },
     { ".gif",   "image/gif" },
     { ".jpg",   "image/jpeg" },
@@ -20,8 +24,11 @@ const unordered_map<string, string> HttpResponse::_suffix_type = {
     { ".avi",   "video/x-msvideo" },
     { ".gz",    "application/x-gzip" },
     { ".tar",   "application/x-tar" },
-    { ".css",   "text/css "},
-    { ".js",    "text/javascript "},
+    { ".css",   "text/css" },
+    { ".js",    "application/javascript" },
+    { ".json",  "application/json" },
+    { ".woff2", "application/font-woff2" },
+    { ".svg",   "image/svg+xml" },  
 };
 
 const unordered_map<int, string> HttpResponse::_code_status = {
@@ -49,7 +56,7 @@ HttpResponse::~HttpResponse() {
     UnmapFile();
 }
 
-void HttpResponse::Init(const string& _src_dir, string& path, bool isKeepAlive, int code){
+void HttpResponse::Init(const string& _src_dir, string& path, bool isKeepAlive, int code, const std::unordered_map<std::string, std::string>& post){
     assert(_src_dir != "");
     if(_mm_file) { UnmapFile(); }
     _code = code;
@@ -58,17 +65,27 @@ void HttpResponse::Init(const string& _src_dir, string& path, bool isKeepAlive, 
     _src_root_dir = _src_dir;
     _mm_file = nullptr; 
     _mm_file_stat = { 0 };
+    _post = post;
 }
 
 void HttpResponse::MakeResponse(Buffer& buff) {
-    if (stat((_src_root_dir + _path).data(), &_mm_file_stat) < 0) {
-        _code = 404;  // 请求的资源不存在，设置状态码为 404
+    // 找到路由
+    if(_route.find(_path) != _route.end()) {
+      if(_path == "/register") {
+        // 注册请求
+        HandlerRegister();
+      }
+      else if(_path == "/login") {
+        // 登录请求
+        HandlerLogin();
+      }
+      else {
+        LOG_ERROR("路由:%s处理失败", _path.c_str());
+        _code = 404;
+      }
     }
-    else if (S_ISDIR(_mm_file_stat.st_mode)) {
-        // 目录 默认访问该目录下的index.html
-        if (_path.back() == '/') _path += "index.html";
-        else _path += "index.html";
-        if(_code == -1) _code = 200;
+    else if (stat((_src_root_dir + _path).data(), &_mm_file_stat) < 0) {
+        _code = 404;  // 请求的资源不存在，设置状态码为 404
     }
     else if (!(_mm_file_stat.st_mode & S_IROTH)) {
         _code = 403;  // 请求的资源没有读权限，设置状态码为 403
@@ -76,13 +93,15 @@ void HttpResponse::MakeResponse(Buffer& buff) {
     else if (_code == -1) {
         _code = 200;  // 如果状态码没有被设置过，默认设置为 200（成功）
     }
-
     ErrorHtml();   // 生成错误页面内容（如果状态码不是 200）
 
     AddStateLine(buff);  // 添加响应状态行，包括协议版本和状态码
     AddHeader(buff);      // 添加响应头部信息
     AddContent(buff);    // 添加响应内容，可能是文件内容或错误页面内容
 }
+
+
+
 
 char* HttpResponse::File() {
     return _mm_file;
@@ -93,6 +112,7 @@ size_t HttpResponse::FileLen() const {
 }
 
 void HttpResponse::ErrorHtml() {
+    if(_route.find(_path) != _route.end()) return;
     if(_codePATH.count(_code) == 1) {
         _path = _codePATH.find(_code)->second;
         stat((_src_root_dir + _path).data(), &_mm_file_stat);
@@ -108,7 +128,8 @@ void HttpResponse::AddStateLine(Buffer& buff) {
         _code = 400;
         status = _code_status.find(400)->second;
     }
-    buff.Append("HTTP/1.1 " + to_string(_code) + " " + status + "\r\n");
+    if(_route.find(_path) != _route.end()) buff.Append("HTTP/1.1 " + to_string(_code) + " " + _status + "\r\n");
+    else buff.Append("HTTP/1.1 " + to_string(_code) + " " + _status + "\r\n");
 }
 
 void HttpResponse::AddHeader(Buffer& buff) {
@@ -123,6 +144,44 @@ void HttpResponse::AddHeader(Buffer& buff) {
 }
 
 void HttpResponse::AddContent(Buffer& buff) {
+    if(_path == "/register") {
+      LOG_DEBUG("注册事件处理");
+      Json::Value response;
+      std::string jsonResponse;
+      if(_code == 200) {
+        response["success"] = true;
+        response["message"] = "Register OK!";
+        jsonResponse = response.toStyledString();
+      }
+      else {
+        response["success"] = false;
+        response["message"] = "Register Error";
+        jsonResponse = response.toStyledString();
+      }
+      LOG_DEBUG("响应JSON:%s",jsonResponse.c_str());
+      buff.Append("Content-Lenth: " + to_string(jsonResponse.size()) + "\r\n\r\n");
+      buff.Append(jsonResponse); jsonResponse = response.toStyledString();
+      return;
+    }
+    else if(_path == "/login") {
+      std::string jsonResponse;
+      LOG_DEBUG("登录事件处理");
+      Json::Value response;
+      if(_code == 200) {
+        response["success"] = true;
+        response["message"] = "Login OK";
+        jsonResponse = response.toStyledString();
+      }
+      else {
+        response["success"] = false;
+        response["message"] = "Login Error";
+        jsonResponse = response.toStyledString();
+      } 
+      LOG_DEBUG("响应JSON:%s",jsonResponse.c_str());
+      buff.Append("Content-Lenth: " + to_string(jsonResponse.size()) + "\r\n\r\n");
+      buff.Append(jsonResponse);
+      return;
+    }
     int srcFd = open((_src_root_dir + _path).data(), O_RDONLY);
     if(srcFd < 0) { 
         ErrorContent(buff, "File NotFound!");
@@ -149,6 +208,11 @@ void HttpResponse::UnmapFile() {
 }
 
 string HttpResponse::GetFileType_() {
+    
+    if(_route.find(_path) != _route.end()) {
+      if((_path == "/register" || _path == "/login") && _suffix_type.count(".json") == 1) return _suffix_type.find(".json")->second;
+      return "text/plain";
+    }
     /* 判断文件类型 */
     string::size_type idx = _path.find_last_of('.');
     if(idx == string::npos) {
@@ -178,5 +242,75 @@ void HttpResponse::ErrorContent(Buffer& buff, string message)
 
     buff.Append("Content-length: " + to_string(body.size()) + "\r\n\r\n");
     buff.Append(body);
+}
+
+void HttpResponse::HandlerRegister()
+{
+    if (_post.empty()) {
+        _code = 400;
+        _status = "Bad Request";
+        LOG_DEBUG("处理登录请求，body为空");
+        return;
+    }
+
+    // 检查是否存在所需字段
+    if (_post.find("name") == _post.end() || _post.find("password") == _post.end() || _post.find("phone") == _post.end()) {
+        _code = 400;
+        _status = "Bad Request";
+        LOG_DEBUG("处理登录请求，缺少所需字段");
+        return;
+    }
+
+    const std::string name = _post.find("name")->second;
+    const std::string phone = _post.find("phone")->second;
+    const std::string password = _post.find("password")->second;
+
+    int res = MysqlOpt::Register(name, phone, password);
+    if (res == 0) {
+        _code = 200; // 已创建
+        _status = "registe OK";
+        LOG_DEBUG("注册成功");
+    } else if (res == -2) {
+        _code = 409;
+        _status = "phone_number exist";
+        LOG_DEBUG("手机号已存在");
+    } else if (res == -2) {
+
+    } else {
+        _code = 500; // 内部服务器错误
+        _status = "server error";
+        LOG_DEBUG("注册插入数据失败");
+    }
+}
+
+void HttpResponse::HandlerLogin()
+{
+    if (_post.empty()) {
+        _code = 400;
+        _status = "Bad Request";
+        LOG_DEBUG("body为空");
+        return;
+    }
+
+    // 检查是否存在所需字段
+    if (_post.find("name") == _post.end() || _post.find("password") == _post.end()) {
+        _code = 400;
+        _status = "Bad Request";
+        LOG_DEBUG("缺少所需字段");
+        return;
+    }
+    const std::string name = _post.find("name")->second;
+    const std::string password = _post.find("password")->second;
+
+    int res = MysqlOpt::Login(name, password);
+    if (res == 0) {
+        _code = 200; // 成功
+        _status = "login OK";
+        LOG_DEBUG("登录成功");
+    } else {
+        _code = 401; // 未授权
+        _status = "login error";
+        LOG_DEBUG("登录失败");
+    }
 }
 

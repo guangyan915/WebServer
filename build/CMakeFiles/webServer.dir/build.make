@@ -195,10 +195,24 @@ CMakeFiles/webServer.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/webServer.dir/src/main.cpp.s"
 	/opt/rh/devtoolset-9/root/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /root/githubPorject/WebServer/src/main.cpp -o CMakeFiles/webServer.dir/src/main.cpp.s
 
+CMakeFiles/webServer.dir/src/mysqlopt.cpp.o: CMakeFiles/webServer.dir/flags.make
+CMakeFiles/webServer.dir/src/mysqlopt.cpp.o: /root/githubPorject/WebServer/src/mysqlopt.cpp
+CMakeFiles/webServer.dir/src/mysqlopt.cpp.o: CMakeFiles/webServer.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/githubPorject/WebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/webServer.dir/src/mysqlopt.cpp.o"
+	/opt/rh/devtoolset-9/root/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/webServer.dir/src/mysqlopt.cpp.o -MF CMakeFiles/webServer.dir/src/mysqlopt.cpp.o.d -o CMakeFiles/webServer.dir/src/mysqlopt.cpp.o -c /root/githubPorject/WebServer/src/mysqlopt.cpp
+
+CMakeFiles/webServer.dir/src/mysqlopt.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/webServer.dir/src/mysqlopt.cpp.i"
+	/opt/rh/devtoolset-9/root/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /root/githubPorject/WebServer/src/mysqlopt.cpp > CMakeFiles/webServer.dir/src/mysqlopt.cpp.i
+
+CMakeFiles/webServer.dir/src/mysqlopt.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/webServer.dir/src/mysqlopt.cpp.s"
+	/opt/rh/devtoolset-9/root/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /root/githubPorject/WebServer/src/mysqlopt.cpp -o CMakeFiles/webServer.dir/src/mysqlopt.cpp.s
+
 CMakeFiles/webServer.dir/src/sqlconnectionpool.cpp.o: CMakeFiles/webServer.dir/flags.make
 CMakeFiles/webServer.dir/src/sqlconnectionpool.cpp.o: /root/githubPorject/WebServer/src/sqlconnectionpool.cpp
 CMakeFiles/webServer.dir/src/sqlconnectionpool.cpp.o: CMakeFiles/webServer.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/githubPorject/WebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/webServer.dir/src/sqlconnectionpool.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/githubPorject/WebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/webServer.dir/src/sqlconnectionpool.cpp.o"
 	/opt/rh/devtoolset-9/root/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/webServer.dir/src/sqlconnectionpool.cpp.o -MF CMakeFiles/webServer.dir/src/sqlconnectionpool.cpp.o.d -o CMakeFiles/webServer.dir/src/sqlconnectionpool.cpp.o -c /root/githubPorject/WebServer/src/sqlconnectionpool.cpp
 
 CMakeFiles/webServer.dir/src/sqlconnectionpool.cpp.i: cmake_force
@@ -212,7 +226,7 @@ CMakeFiles/webServer.dir/src/sqlconnectionpool.cpp.s: cmake_force
 CMakeFiles/webServer.dir/src/webserver.cpp.o: CMakeFiles/webServer.dir/flags.make
 CMakeFiles/webServer.dir/src/webserver.cpp.o: /root/githubPorject/WebServer/src/webserver.cpp
 CMakeFiles/webServer.dir/src/webserver.cpp.o: CMakeFiles/webServer.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/githubPorject/WebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/webServer.dir/src/webserver.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/githubPorject/WebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/webServer.dir/src/webserver.cpp.o"
 	/opt/rh/devtoolset-9/root/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/webServer.dir/src/webserver.cpp.o -MF CMakeFiles/webServer.dir/src/webserver.cpp.o.d -o CMakeFiles/webServer.dir/src/webserver.cpp.o -c /root/githubPorject/WebServer/src/webserver.cpp
 
 CMakeFiles/webServer.dir/src/webserver.cpp.i: cmake_force
@@ -234,6 +248,7 @@ webServer_OBJECTS = \
 "CMakeFiles/webServer.dir/src/httpresponse.cpp.o" \
 "CMakeFiles/webServer.dir/src/log.cpp.o" \
 "CMakeFiles/webServer.dir/src/main.cpp.o" \
+"CMakeFiles/webServer.dir/src/mysqlopt.cpp.o" \
 "CMakeFiles/webServer.dir/src/sqlconnectionpool.cpp.o" \
 "CMakeFiles/webServer.dir/src/webserver.cpp.o"
 
@@ -249,12 +264,13 @@ webServer: CMakeFiles/webServer.dir/src/httprequest.cpp.o
 webServer: CMakeFiles/webServer.dir/src/httpresponse.cpp.o
 webServer: CMakeFiles/webServer.dir/src/log.cpp.o
 webServer: CMakeFiles/webServer.dir/src/main.cpp.o
+webServer: CMakeFiles/webServer.dir/src/mysqlopt.cpp.o
 webServer: CMakeFiles/webServer.dir/src/sqlconnectionpool.cpp.o
 webServer: CMakeFiles/webServer.dir/src/webserver.cpp.o
 webServer: CMakeFiles/webServer.dir/build.make
 webServer: /usr/lib64/mysql/libmysqlclient.a
 webServer: CMakeFiles/webServer.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/root/githubPorject/WebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Linking CXX executable webServer"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/root/githubPorject/WebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX executable webServer"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/webServer.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

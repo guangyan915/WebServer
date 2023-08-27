@@ -67,6 +67,8 @@ ssize_t HttpConn::write(int* saveErrno) {
     ssize_t len = -1;
     do {
         len = writev(_fd, _iov, _iov_cnt);
+        // 在每次迭代中打印 _iov 中的数据内容
+        //printf("Sent data: %.*s\n", static_cast<int>(len), static_cast<char*>(_iov[0].iov_base));
         if(len <= 0) {
             *saveErrno = errno;
             break;
@@ -97,25 +99,33 @@ bool HttpConn::process() {
     // 解析http请求
     else if(_request.parse(read_buff)) {
         LOG_DEBUG("%s", _request.path().c_str());
-        _response.Init(_src_dir, _request.path(), _request.IsKeepAlive(), 200);
-    } else {
-        _response.Init(_src_dir, _request.path(), false, 400);
-    }
+        auto _post = _request.GetPost();
+        _response.Init(_src_dir, _request.path(), _request.IsKeepAlive(), 200, _post);
 
+    } else {
+        auto _post = _request.GetPost();
+        _response.Init(_src_dir, _request.path(), false, 400, _post);
+        return false;
+    }
+    
     // 制作响应
     _response.MakeResponse(write_buff);
     // 响应头
     _iov[0].iov_base = const_cast<char*>(write_buff.Peek());
     _iov[0].iov_len = write_buff.ReadableBytes();
     _iov_cnt = 1;
-
+    
+    //std::string res(write_buff.Peek(), write_buff.BeginWriteConst());
+    //LOG_DEBUG("响应: %s", res.c_str());
+    
+    
     // 文件
     if(_response.FileLen() > 0  && _response.File()) {
         _iov[1].iov_base = _response.File();
         _iov[1].iov_len = _response.FileLen();
         _iov_cnt = 2;
     }
+    
     LOG_DEBUG("filesize:%d, %d  to %d", _response.FileLen() , _iov_cnt, ToWriteBytes());
     return true;
-}
-
+  }

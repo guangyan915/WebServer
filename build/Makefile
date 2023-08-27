@@ -345,6 +345,30 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/webServer.dir/build.make CMakeFiles/webServer.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/mysqlopt.o: src/mysqlopt.cpp.o
+.PHONY : src/mysqlopt.o
+
+# target to build an object file
+src/mysqlopt.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webServer.dir/build.make CMakeFiles/webServer.dir/src/mysqlopt.cpp.o
+.PHONY : src/mysqlopt.cpp.o
+
+src/mysqlopt.i: src/mysqlopt.cpp.i
+.PHONY : src/mysqlopt.i
+
+# target to preprocess a source file
+src/mysqlopt.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webServer.dir/build.make CMakeFiles/webServer.dir/src/mysqlopt.cpp.i
+.PHONY : src/mysqlopt.cpp.i
+
+src/mysqlopt.s: src/mysqlopt.cpp.s
+.PHONY : src/mysqlopt.s
+
+# target to generate assembly for a file
+src/mysqlopt.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webServer.dir/build.make CMakeFiles/webServer.dir/src/mysqlopt.cpp.s
+.PHONY : src/mysqlopt.cpp.s
+
 src/sqlconnectionpool.o: src/sqlconnectionpool.cpp.o
 .PHONY : src/sqlconnectionpool.o
 
@@ -429,6 +453,9 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/mysqlopt.o"
+	@echo "... src/mysqlopt.i"
+	@echo "... src/mysqlopt.s"
 	@echo "... src/sqlconnectionpool.o"
 	@echo "... src/sqlconnectionpool.i"
 	@echo "... src/sqlconnectionpool.s"

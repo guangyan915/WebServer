@@ -59,6 +59,7 @@ WebServer::WebServer() {
     else {
       LOG_INFO("========== 服务器初始化 ==========");
       if(!_load_conf_file_ok) LOG_WARN("配置文件加载失败!使用默认配置");
+      LOG_INFO("最大文件描述符个数：%d", _max_fd);
       LOG_INFO("端口：%d，开启Linger：%s", _port, _open_linger ? "true" : "false");
       
       LOG_INFO("监听模式：%s，连接模式：%s",
@@ -127,15 +128,15 @@ void WebServer::Start() {
             else if (events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR)) {
                 // 处理套接字关闭、挂起或错误的情况
                 assert(_users.count(fd) > 0);
-                CloseConn(_users[fd]);  // 关闭连接
+                CloseConn(&_users[fd]);  // 关闭连接
             }
             else if (events & EPOLLIN) {
                 assert(_users.count(fd) > 0);
-                DealRead(_users[fd]);  // 处理读事件
+                DealRead(&_users[fd]);  // 处理读事件
             }
             else if (events & EPOLLOUT) {
                 assert(_users.count(fd) > 0);
-                DealWrite(_users[fd]);  // 处理写事件
+                DealWrite(&_users[fd]);  // 处理写事件
             }
             else {
                 LOG_ERROR("未知的事件类型");
@@ -160,29 +161,29 @@ void WebServer::CloseConn(HttpConn* client) {
     LOG_INFO("客户端[%d]断开连接！", client->GetFd());
     _epoller->DelFd(client->GetFd());  // 从epoll中移除
     client->Close();  // 关闭连接
-    _obj_pool->Delete(client);
-    auto it = _users.find(client->GetFd());
+    //_obj_pool->Delete(client);
+    //auto it = _users.find(client->GetFd());
 
     //bug _users.erase会再次析构client,Delete已经回收过了
     //if(it != _users.end()) _users.erase(it);
-    
+    /*
     if(it != _users.end()) {
       _users[client->GetFd()] = nullptr;
       _users.erase(it);
-    }
+    }*/
 }
 
 // 添加客户端连接
 void WebServer::AddClient(int fd, sockaddr_in addr) {
     assert(fd > 0);
-    _users[fd] = _obj_pool->New();
-    _users[fd]->init(fd, addr);
+    //_users[fd] = _obj_pool->New();
+    _users[fd].init(fd, addr);
     if (_timeout_MS > 0) {
-        _timer->add(fd, _timeout_MS, std::bind(&WebServer::CloseConn, this, _users[fd]));
+        _timer->add(fd, _timeout_MS, std::bind(&WebServer::CloseConn, this, &_users[fd]));
     }
     _epoller->AddFd(fd, EPOLLIN | _conn_event);  // 将客户端加入epoll监听
     SetFdNonblock(fd);  // 设置文件描述符为非阻塞模式
-    LOG_INFO("客户端[%d]连接！", _users[fd]->GetFd());
+    LOG_INFO("客户端[%d]连接！", _users[fd].GetFd());
 }
 
 // 处理监听事件

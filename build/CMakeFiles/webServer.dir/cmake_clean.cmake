@@ -17,6 +17,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/webServer.dir/src/log.cpp.o.d"
   "CMakeFiles/webServer.dir/src/main.cpp.o"
   "CMakeFiles/webServer.dir/src/main.cpp.o.d"
+  "CMakeFiles/webServer.dir/src/mysqlopt.cpp.o"
+  "CMakeFiles/webServer.dir/src/mysqlopt.cpp.o.d"
   "CMakeFiles/webServer.dir/src/sqlconnectionpool.cpp.o"
   "CMakeFiles/webServer.dir/src/sqlconnectionpool.cpp.o.d"
   "CMakeFiles/webServer.dir/src/webserver.cpp.o"

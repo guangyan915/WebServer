@@ -89,7 +89,7 @@ private:
     ThreadPool* _thread_pool;
     Epoller* _epoller;
     ObjectPool<HttpConn>* _obj_pool;
-    std::unordered_map<int, HttpConn*> _users;
+    std::unordered_map<int, HttpConn> _users;
 };
 
 #endif //WEBSERVER_H
