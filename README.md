@@ -37,7 +37,8 @@ Reactor 模式是灵活多变的，可以应对不同的业务场景，灵活在
 
 ### 单Rector多线程模式
 
-![img](https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost4@main/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/Reactor/%E5%8D%95Reactor%E5%A4%9A%E7%BA%BF%E7%A8%8B.png)
+![单Reactor多线程](https://github.com/guangyan915/WebServer/assets/127613883/2e716aaa-57c3-4930-8f5b-84694bc6e260)
+
 
 - 采用IO多路复用：Epoll ET模式
 - 新加入事件为可读事件，当事件处理完将事件标记为可写事件，可写事件处理完判断连接是否为长连接，是否超时从而关闭连接或者将事件标记为可读事件。（这样做保证缓冲区满了，服务器还能处理其他业务）
