@@ -1,4 +1,6 @@
 #include "../include/httprequest.h"
+#include "../include/util.h"
+
 using namespace std;
 
 
@@ -67,17 +69,9 @@ void HttpRequest::ParsePath() {
     if (_path == "/") {
         _path = "/index.html";
     }
-    else {
-        // 遍历默认的静态资源路径数组
-      /*  
-      for (auto& item : _default_html) {
-            // 如果请求路径在默认静态资源路径中找到匹配项，则将路径末尾添加 .html 扩展名
-            if (item == _path) {
-                _path += ".html";
-                break;
-            }
-        }
-        */
+    // url jiema
+    else if(_method == "GET") {
+      _path = Util::UrlDecode(_path);
     }
 }
 

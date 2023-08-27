@@ -229,4 +229,5 @@ CMakeFiles/webServer.dir/src/httprequest.cpp.o: \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/queue \
  /opt/rh/devtoolset-9/root/usr/include/c++/9/bits/stl_queue.h \
  /usr/include/semaphore.h /usr/include/bits/semaphore.h \
- /root/githubPorject/WebServer/src/../include/sqlconnectionRAII.h
+ /root/githubPorject/WebServer/src/../include/sqlconnectionRAII.h \
+ /root/githubPorject/WebServer/src/../include/util.h
